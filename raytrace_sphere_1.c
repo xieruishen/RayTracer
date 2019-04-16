@@ -110,8 +110,8 @@ int main(int argc, char *argv[]){
 
 	/* Direction of the ray */
 	r.dir.x = 0;
-	r.dir.y = 1;
-	r.dir.z = 0;
+	r.dir.y = 0;
+	r.dir.z = 1;
 
 	/* Start position of the ray, z coordinate */
 	r.start.z = 0;
