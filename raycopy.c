@@ -7,7 +7,7 @@
 #define WIDTH  800
 #define HEIGHT 600
 
-
+/*max and min values needed for the intersectRayCube() function*/ 
 #define INT_MIN -2147000000
 #define INT_MAX 2147000000
 
@@ -23,6 +23,7 @@ typedef struct{
         float  radius;
 }sphere;
 
+/*The cube*/
 typedef struct{
         float x1;
         float x2;
@@ -49,18 +50,23 @@ float vectorDot(vector *v1, vector *v2){
 	return v1->x * v2->x + v1->y * v2->y + v1->z * v2->z;
 }
 
+/*min and max are two helper functions needed for the intersectRayCube() function*/
+
 float min(float x, float y)
 {
   if (x<y){return x;}
   return y;
 }
-
 float max(float x, float y)
 {
   if (x>y){return x;}
   return y;
 }
 
+/*
+The intersect Ray Cube function works by using the slab method.
+In the slab method, we flatten out the cube and check if the ray passes through the bounding lines.
+*/
 bool intersectRayCube(ray *r, cube *c)
 {
   int tNear = INT_MIN;
@@ -76,6 +82,7 @@ bool intersectRayCube(ray *r, cube *c)
   float minCubeY = min(c->y1,c->y2);
   float maxCubeY = max(c->y1,c->x2);
 
+/*if the ray is parallel to the x axis and not inbetween the min and max x bounds of the cube then return false*/
   if (xd==0 && (xo<minCubeX || xo>maxCubeX))
   {
     return false;
@@ -84,24 +91,11 @@ bool intersectRayCube(ray *r, cube *c)
     float t1 = (minCubeX - xo)/xd;
     float t2 = (maxCubeX - xo)/xd;
 
-    /*if (t1>t2)
-    {
-      float temp = t2;
-      t2 = t1;
-      t1 = t2;
-    }
-
-    tNear = max(tNear, t1);
-    tFar = max(tFar, t1);
-*/
     tNear = max(tNear, min(t1, t2));
     tFar = min(tFar, max(t1, t2));
-
-    /*if ((tNear > tFar) || (tFar < 0))
-        return false;
-  }*/
   }
 
+/*if the ray is parallel to the y axis and not inbetween the min and max y bounds of the cube then return false*/
   if (yd==0 && (yo<minCubeY || yo>maxCubeY))
   {
     return false;
@@ -110,28 +104,14 @@ bool intersectRayCube(ray *r, cube *c)
     float t1 = (minCubeY - yo)/yd;
     float t2 = (maxCubeY - yo)/yd;
 
-    /*if (t1>t2)
-    {
-      float temp = t2;
-      t2 = t1;
-      t1 = t2;
-    }
-
-    tNear = max(tNear, t1);
-    tFar = max(tFar, t1);
-*/
     tNear = max(tNear, min(t1, t2));
     tFar = min(tFar, max(t1, t2));
 
-    /*if ((tNear > tFar) || (tFar < 0))
-        return false;
-  }*/
   }
 
+//if tFar is greater than tNear then we know that the ray does not pass through the cube.
   return tFar >= tNear;
 }
-
-
 
 
 /* Check if the ray and sphere intersect */
@@ -231,10 +211,10 @@ int main(int argc, char *argv[]){
 			r.start.x = x;
 
 			/* Check if the ray intersects with the shpere */
-			hit = intersectRayCube(&r, &c);
+			hit = intersectRayCube(&r, &c) || intersectRaySphere(&r,&s);
 			if(hit){
-				img[(x + y*WIDTH)*3 + 0] = 255;
-				img[(x + y*WIDTH)*3 + 1] = 0;
+				img[(x + y*WIDTH)*3 + 0] = 0;
+				img[(x + y*WIDTH)*3 + 1] = 255;
 				img[(x + y*WIDTH)*3 + 2] = 0;
 			}else{
 				img[(x + y*WIDTH)*3 + 0] = 0;
