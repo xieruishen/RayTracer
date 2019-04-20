@@ -7,7 +7,7 @@
 #define WIDTH  800
 #define HEIGHT 600
 
-/*max and min values needed for the intersectRayCube() function*/ 
+/*max and min values needed for the intersectRayCube() function*/
 #define INT_MIN -2147000000
 #define INT_MAX 2147000000
 
