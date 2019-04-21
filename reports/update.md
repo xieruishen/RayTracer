@@ -28,6 +28,7 @@ Other resources that provides examples for ray tracer program with more complex 
 ## Implementation
 ### Sphere and Rectangle in 2D
 
+#### UML Diagram
 Our implementation is a modification of the code available on this website: https://www.purplealienplanet.com/node/20
 ![UML](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/UML.jpg)
 
