@@ -36,6 +36,7 @@ Our implementation is a modification of the code available on this website: http
 
 ![Sphere2D](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/sphere2d.jpg)
 
+
 To determine if a ray will intersect a sphere or not we try to find if there exists a real value t where t is the magnitude of the line segment PA. The origin of the coordinate system is the center of the sphere. We define the unit vector of PA as d. The magnitude of OA is the radius of the circle r. To determine if there is a real value for t, we can solve the following equation:
 
                         || P + dt || = r
