@@ -7,6 +7,11 @@
 #define WIDTH  800
 #define HEIGHT 600
 
+/*max and min values needed for the intersectRayCube() function*/
+#define INT_MIN -2147000000
+#define INT_MAX 2147000000
+
+
 /* The vector structure */
 typedef struct{
       float x,y,z;
@@ -17,16 +22,16 @@ typedef struct{
         vector pos;
         float  radius;
 }sphere;
-<<<<<<< HEAD
 
+/*The cube*/
 typedef struct{
-  vector pos;
-  float length;
-  float width;
-  float height;
+        float x1;
+        float x2;
+        float y1;
+        float y2;
+        float z1;
+        float z2;
 }cube;
-=======
->>>>>>> 0efa58eecefb2ddb1e325310b2a3f125fcb66894
 
 /* The ray */
 typedef struct{
@@ -45,13 +50,72 @@ float vectorDot(vector *v1, vector *v2){
 	return v1->x * v2->x + v1->y * v2->y + v1->z * v2->z;
 }
 
+/*min and max are two helper functions needed for the intersectRayCube() function*/
+
+float min(float x, float y)
+{
+  if (x<y){return x;}
+  return y;
+}
+float max(float x, float y)
+{
+  if (x>y){return x;}
+  return y;
+}
+
+/*
+The intersect Ray Cube function works by using the slab method.
+In the slab method, we flatten out the cube and check if the ray passes through the bounding lines.
+*/
+bool intersectRayCube(ray *r, cube *c)
+{
+  int tNear = INT_MIN;
+  int tFar = INT_MAX;
+
+  float xd = r->dir.x;
+  float xo = r->start.x;
+  float yd = r->dir.y;
+  float yo = r->start.y;
+
+  float minCubeX = min(c->x1,c->x2);
+  float maxCubeX = max(c->x1,c->x2);
+  float minCubeY = min(c->y1,c->y2);
+  float maxCubeY = max(c->y1,c->x2);
+
+/*if the ray is parallel to the x axis and not inbetween the min and max x bounds of the cube then return false*/
+  if (xd==0 && (xo<minCubeX || xo>maxCubeX))
+  {
+    return false;
+  }
+  else{
+    float t1 = (minCubeX - xo)/xd;
+    float t2 = (maxCubeX - xo)/xd;
+
+    tNear = max(tNear, min(t1, t2));
+    tFar = min(tFar, max(t1, t2));
+  }
+
+/*if the ray is parallel to the y axis and not inbetween the min and max y bounds of the cube then return false*/
+  if (yd==0 && (yo<minCubeY || yo>maxCubeY))
+  {
+    return false;
+  }
+  else{
+    float t1 = (minCubeY - yo)/yd;
+    float t2 = (maxCubeY - yo)/yd;
+
+    tNear = max(tNear, min(t1, t2));
+    tFar = min(tFar, max(t1, t2));
+
+  }
+
+//if tFar is greater than tNear then we know that the ray does not pass through the cube.
+  return tFar >= tNear;
+}
+
 
 /* Check if the ray and sphere intersect */
-<<<<<<< HEAD
-bool intersectRaySphere(ray *r, cube *c){
-=======
 bool intersectRaySphere(ray *r, sphere *s){
->>>>>>> 0efa58eecefb2ddb1e325310b2a3f125fcb66894
 
 	/* A = d.d, the vector dot product of the direction */
 	float A = vectorDot(&r->dir, &r->dir);
@@ -60,21 +124,13 @@ bool intersectRaySphere(ray *r, sphere *s){
 	 * the ray and the position of the circle.
 	 * This is the term (p0 - c)
 	 */
-<<<<<<< HEAD
-	vector dist = vectorSub(&r->start, &c->pos);
-=======
 	vector dist = vectorSub(&r->start, &s->pos);
->>>>>>> 0efa58eecefb2ddb1e325310b2a3f125fcb66894
 
 	/* 2d.(p0 - c) */
 	float B = 2 * vectorDot(&r->dir, &dist);
 
 	/* (p0 - c).(p0 - c) - r^2 */
-<<<<<<< HEAD
-	float C = vectorDot(&dist, &dist) - (c->radius * c->radius);
-=======
 	float C = vectorDot(&dist, &dist) - (s->radius * s->radius);
->>>>>>> 0efa58eecefb2ddb1e325310b2a3f125fcb66894
 
 	/* Solving the discriminant */
 	float discr = B * B - 4 * A * C;
@@ -87,10 +143,6 @@ bool intersectRaySphere(ray *r, sphere *s){
 		return false;
 	else
 		return true;
-}
-
-bool intersectRaySquare(){
-
 }
 
 /* Output data as PPM file */
@@ -119,6 +171,7 @@ int main(int argc, char *argv[]){
 	/* Our ray and a sphere */
 	sphere s;
 	ray r;
+  cube c;
 
 	/* x, y for screen 'resolution' */
 	int x,y;
@@ -127,9 +180,16 @@ int main(int argc, char *argv[]){
 	bool hit;
 
 	/* Position the sphere */
-	s.pos.x = 200;
-	s.pos.y = 200;
+	s.pos.x = 300;
+	s.pos.y = 300;
 	s.pos.z = 100;
+
+  c.x1 = 300;
+  c.y1 = 300;
+  c.x2 = 600;
+  c.y2 = 600;
+  c.z1 = 100;
+  c.z2 = 200;
 
 	/* Sphere radius */
 	s.radius = 100;
@@ -151,10 +211,10 @@ int main(int argc, char *argv[]){
 			r.start.x = x;
 
 			/* Check if the ray intersects with the shpere */
-			hit = intersectRaySphere(&r, &s);
+			hit = intersectRayCube(&r, &c) || intersectRaySphere(&r,&s);
 			if(hit){
-				img[(x + y*WIDTH)*3 + 0] = 255;
-				img[(x + y*WIDTH)*3 + 1] = 0;
+				img[(x + y*WIDTH)*3 + 0] = 0;
+				img[(x + y*WIDTH)*3 + 1] = 255;
 				img[(x + y*WIDTH)*3 + 2] = 0;
 			}else{
 				img[(x + y*WIDTH)*3 + 0] = 0;
@@ -163,6 +223,7 @@ int main(int argc, char *argv[]){
 			}
 		}
 	}
+
 
 	saveppm("image.ppm", img, WIDTH, HEIGHT);
 
