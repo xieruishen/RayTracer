@@ -31,6 +31,7 @@ Other resources that provides examples for ray tracer program with more complex 
 Our implementation is a modification of the code available on this website: https://www.purplealienplanet.com/node/20
 ![UML](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/UML.jpg)
 
+![SphereandRectangle](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/UML.jpg)
 
 #### Sphere
 
@@ -43,10 +44,20 @@ To determine if a ray will intersect a sphere or not we try to find if there exi
 The algorithm can be simplified by computing if the determinant of the equation is greater than zero of not.
 
 #### Rectangle
-### Sphere and Rectangle in 3D
-#### Sphere
-#### Rectangle
+We used the slab method to calculate the intersection of a ray with the cube. In the slab method, we flatten out the cube and check if the ray falls within the bounding lines as shown in the diagram below.
+
+![Rectangle](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/Rectangle.jpg)
+
+To determine if it’s a hit or a miss, first, we calculate t1 and t2 using only the x coordinates. Let the minimum of t1 and t2 be tnear and the maximum be tfar. We can then calculate t1 and t2 using the y coordinates, but tnear is only updated if the minimum of t1 and t2 is greater than the previous tnear and tfar is only updated if the maximum of t1 and t2 is lesser than the previous tfar. After these two rounds of calculations are done if tnear > tfar then we know that the ray does not intersect with the cube.
+
+#### Pixels
+In order to visualize the ray interaction with the object, a for loop is implemented to iterate over every pixel of the screen so that we project eye array from every single pixel of an image Then, it checks whether the ray intersects with the pixel and if yes, a RGB value is encoded to lighten up the object.
+
+### Results
+![results](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/Result.jpg)
 
 ### Next Steps
+* ***Implement shapes in 3D with reflections and shadows.*** So far we have only been implementing and studying 2d ray tracing code, our next step is to code spheres and cubes in 3D. This would involve studying reflections and shadows.  
+* ***Add other shapes in 2D and 3D.*** One possibility that we are considering right now is rendering prisms.
 
 ### Project Reflection
