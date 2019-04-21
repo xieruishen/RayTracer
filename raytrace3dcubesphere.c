@@ -76,11 +76,15 @@ bool intersectRayCube(ray *r, cube *c)
   float xo = r->start.x;
   float yd = r->dir.y;
   float yo = r->start.y;
+  float zd = r->dir.z;
+  float zo = r->start.z;
 
   float minCubeX = min(c->x1,c->x2);
   float maxCubeX = max(c->x1,c->x2);
   float minCubeY = min(c->y1,c->y2);
   float maxCubeY = max(c->y1,c->x2);
+  float minCubeZ = min(c->z1,c->z2);
+  float maxCubeZ = max(c->z1,c->z2);
 
 /*if the ray is parallel to the x axis and not inbetween the min and max x bounds of the cube then return false*/
   if (xd==0 && (xo<minCubeX || xo>maxCubeX))
@@ -109,13 +113,28 @@ bool intersectRayCube(ray *r, cube *c)
 
   }
 
+  /*if the ray is parallel to the z axis and not inbetween the min and max z bounds of the cube then return false*/
+    if (zd==0 && (zo<minCubeZ || zo>maxCubeZ))
+    {
+      return false;
+    }
+    else{
+      float t1 = (minCubeZ - zo)/zd;
+      float t2 = (maxCubeZ - zo)/zd;
+
+      tNear = max(tNear, min(t1, t2));
+      tFar = min(tFar, max(t1, t2));
+
+    }
+
 //if tFar is greater than tNear then we know that the ray does not pass through the cube.
   return tFar >= tNear;
 }
 
 
-/* Check if the ray and sphere intersect */
-bool intersectRaySphere(ray *r, sphere *s){
+bool intersectRaySphere(ray *r, sphere *s, float *t){
+
+	bool retval = false;
 
 	/* A = d.d, the vector dot product of the direction */
 	float A = vectorDot(&r->dir, &r->dir);
@@ -138,11 +157,29 @@ bool intersectRaySphere(ray *r, sphere *s){
 	/* If the discriminant is negative, there are no real roots.
 	 * Return false in that case as the ray misses the sphere.
 	 * Return true in all other cases (can be one or two intersections)
+	 * t represents the distance between the start of the ray and
+	 * the point on the sphere where it intersects.
 	 */
 	if(discr < 0)
-		return false;
-	else
-		return true;
+		retval = false;
+	else{
+		float sqrtdiscr = sqrtf(discr);
+		float t0 = (-B + sqrtdiscr)/(2);
+		float t1 = (-B - sqrtdiscr)/(2);
+
+		/* We want the closest one */
+		if(t0 > t1)
+			t0 = t1;
+
+		/* Verify t1 larger than 0 and less than the original t */
+		if((t0 > 0.001f) && (t0 < *t)){
+			*t = t0;
+			retval = true;
+		}else
+			retval = false;
+	}
+
+return retval;
 }
 
 /* Output data as PPM file */
@@ -218,11 +255,11 @@ int main(int argc, char *argv[]){
         if (hitcube){
 				img[(x + y*WIDTH)*3 + 0] = 0;
 				img[(x + y*WIDTH)*3 + 1] = 255;
-				img[(x + y*WIDTH)*3 + 2] = 0;
+				img[(x + y*WIDTH)*3 + 2] = 255;
         }else{
           img[(x + y*WIDTH)*3 + 0] = 0;
   				img[(x + y*WIDTH)*3 + 1] = 255;
-  				img[(x + y*WIDTH)*3 + 2] = 255;
+  				img[(x + y*WIDTH)*3 + 2] = 0;
 			}}else{
 				img[(x + y*WIDTH)*3 + 0] = 0;
 				img[(x + y*WIDTH)*3 + 1] = 0;
