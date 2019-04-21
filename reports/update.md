@@ -26,13 +26,12 @@ Other resources that provides examples for ray tracer program with more complex 
 * [A small, simple path tracer written in C](https://github.com/VKoskiv/c-ray)
 
 ## Implementation
-### Sphere and Rectangle in 2D
 
 #### UML Diagram
 Our implementation is a modification of the code available on this website: https://www.purplealienplanet.com/node/20
 ![UML](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/UML.jpg)
 
-
+### Sphere and Rectangle in 2D
 #### Sphere
 
 ![Sphere2D](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/sphere2d.jpg)
