@@ -1,5 +1,4 @@
-# ThinkRayTracer
-### Software Systems Project 2
+# ThinkRayTracer: C Based Ray Tracing Algorithm
 #### Hyegi Bang, Sherrie Shen, Athmika Senthikumar
 
 ## Project Vision
