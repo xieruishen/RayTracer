@@ -91,3 +91,6 @@ In order to visualize the ray interaction with the object, a for loop is impleme
 * ***Implement shapes in 3D with reflections and shadows.*** So far we have only been implementing and studying 2d ray tracing code, our next step is to code spheres and cubes in 3D. This would involve studying reflections and shadows.  
 * ***Add other shapes in 2D and 3D.*** One possibility that we are considering right now is rendering prisms.
 
+### Trello
+https://trello.com/b/mrNEzxu5/thinkraytracer
+
