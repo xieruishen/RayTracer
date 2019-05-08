@@ -239,6 +239,7 @@ int main(int argc, char *argv[]){
 					if(intersectRaySphere(&r, &spheres[i], &t)){
 						currentSphere = i;
             // printf("%d\n", currentSphere);
+            // printf("distance: %f\n", t);
           }
 				}
 				if(currentSphere == -1) break;
@@ -264,7 +265,7 @@ int main(int argc, char *argv[]){
 					vector dist = vectorSub(&currentLight.pos, &newStart);
 					if(vectorDot(&n, &dist) <= 0.0f) continue;
 					float t = sqrtf(vectorDot(&dist,&dist));
-          printf("%lf\n",t );
+          //printf("%lf\n",t );
 					if(t <= 0.0f) continue;
 
 					ray lightRay;

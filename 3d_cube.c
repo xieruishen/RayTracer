@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdbool.h> /* Needed for boolean datatype */
 #include <math.h>
+#include <float.h>
 
 /* Width and height of out image */
 #define WIDTH  1000
@@ -111,18 +112,23 @@ bool intersectRayCube(ray *r, cube *c, float *t)
 
   bool retval = false;
 
-  int tNear = INT_MIN;
-  int tFar = INT_MAX;
+  float tNear = (float)INT_MIN;
+  float tFar = (float)INT_MAX;
 
   float xd = r->dir.x;
   float xo = r->start.x;
   float yd = r->dir.y;
   float yo = r->start.y;
+  float zd = r->dir.z;
+  float zo = r->start.z;
 
   float minCubeX = min(x1,x2);
   float maxCubeX = max(x1,x2);
   float minCubeY = min(y1,y2);
   float maxCubeY = max(y1,x2);
+  float minCubeZ = min(z1,z2);
+  float maxCubeZ = max(z1,x2);
+
 
 /*if the ray is parallel to the x axis and not inbetween the min and max x bounds of the cube then return false*/
   if (xd==0 && (xo<minCubeX || xo>maxCubeX))
@@ -151,8 +157,23 @@ bool intersectRayCube(ray *r, cube *c, float *t)
 
   }
 
+/*if the ray is parallel to the z axis and not inbetween the min and max y bounds of the cube then return false*/
+  if (zd==0 && (zo<minCubeZ || zo>maxCubeZ))
+  {
+    return retval;
+  }
+  else{
+    float t1 = (minCubeZ - zo)/zd;
+    float t2 = (maxCubeZ - zo)/zd;
+
+    tNear = max(tNear, min(t1, t2));
+    tFar = min(tFar, max(t1, t2));
+  }
+
 //if tFar is greater than tNear then we know that the ray does not pass through the cube.
   if(tFar>= tNear){
+    // printf("tnear: %f\n", tNear);
+    // printf("tfar: %f\n", tFar);
     *t = tNear;
     retval = true;
   }
@@ -270,7 +291,7 @@ int main(int argc, char *argv[]){
   //
   cube[0].pos.x = 450;
   cube[0].pos.y = 450;
-  cube[0].pos.z = 150;
+  cube[0].pos.z = 50;
   cube[0].length = 300;
   cube[0].width = 300;
   cube[0].height = 100;
@@ -278,14 +299,14 @@ int main(int argc, char *argv[]){
 
   cube[1].pos.x = 150;
   cube[1].pos.y = 150;
-  cube[1].pos.z = 50;
+  cube[1].pos.z = 350;
   cube[1].length = 100;
   cube[1].width = 100;
   cube[1].height = 100;
   cube[1].material = 1;
 
-  cube[2].pos.x = 550;
-  cube[2].pos.y = 550;
+  cube[2].pos.x = 0;
+  cube[2].pos.y = 0;
   cube[2].pos.z = 350;
   cube[2].length = 50;
   cube[2].width = 50;
@@ -362,6 +383,7 @@ int main(int argc, char *argv[]){
 						currentCube = i;
             // printf("%d\n", i);
             // printf("%d\n", currentCube);
+            // printf("distance: %f\n", t);
 				}
       }
 				if(currentCube == -1) {
@@ -394,7 +416,7 @@ int main(int argc, char *argv[]){
 					vector dist = vectorSub(&currentLight.pos, &newStart);
 					if(vectorDot(&n, &dist) <= 0.0f) continue;
 					float t = sqrtf(vectorDot(&dist,&dist));
-          printf("%lf\n",t );
+          //printf("%lf\n",t );
 
 					if(t <= 0.0f){
             continue;
@@ -426,7 +448,7 @@ int main(int argc, char *argv[]){
 			}while((coef > 0.0f) && (level < 15));
 			img[(x + y*WIDTH)*3 + 0] = (unsigned char)min(red*255.0f, 255.0f);
       if(red != 0){
-        printf("%lf\n", red);
+        // printf("%lf\n", red);
         // printf("%d\n", img[(x + y*WIDTH)*3 + 0]);
       }
 			img[(x + y*WIDTH)*3 + 1] = (unsigned char)min(green*255.0f, 255.0f);
@@ -434,7 +456,7 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	saveppm("image.ppm", img, WIDTH, HEIGHT);
+	saveppm("image_cube.ppm", img, WIDTH, HEIGHT);
 
 return 0;
 }
