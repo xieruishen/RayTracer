@@ -102,7 +102,7 @@ bool intersectRaySphere(ray *r, sphere *s, float *t){
 	 * Return false in that case as the ray misses the sphere.
 	 * Return true in all other cases (can be one or two intersections)
 	 * t represents the distance between the start of the ray and
-	 * the point on the sphere where it intersects.
+	 * the point on tnewStarthe sphere where it intersects.
 	 */
 	if(discr < 0)
 		retval = false;
@@ -236,8 +236,10 @@ int main(int argc, char *argv[]){
 
 				unsigned int i;
 				for(i = 0; i < 3; i++){
-					if(intersectRaySphere(&r, &spheres[i], &t))
+					if(intersectRaySphere(&r, &spheres[i], &t)){
 						currentSphere = i;
+            // printf("%d\n", currentSphere);
+          }
 				}
 				if(currentSphere == -1) break;
 
@@ -262,6 +264,7 @@ int main(int argc, char *argv[]){
 					vector dist = vectorSub(&currentLight.pos, &newStart);
 					if(vectorDot(&n, &dist) <= 0.0f) continue;
 					float t = sqrtf(vectorDot(&dist,&dist));
+          printf("%lf\n",t );
 					if(t <= 0.0f) continue;
 
 					ray lightRay;
@@ -288,6 +291,11 @@ int main(int argc, char *argv[]){
 			}while((coef > 0.0f) && (level < 15));
 
 			img[(x + y*WIDTH)*3 + 0] = (unsigned char)min(red*255.0f, 255.0f);
+      if(red != 0){
+        // printf("%lf\n", red);
+        // printf("%d\n", img[(x + y*WIDTH)*3 + 0]);
+      }
+
 			img[(x + y*WIDTH)*3 + 1] = (unsigned char)min(green*255.0f, 255.0f);
 			img[(x + y*WIDTH)*3 + 2] = (unsigned char)min(blue*255.0f, 255.0f);
 		}
