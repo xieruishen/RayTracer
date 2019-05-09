@@ -19,7 +19,8 @@ typedef struct{
 typedef struct{
         vector pos;
         float  radius;
-}sphere; 
+        int material;
+}sphere;
 
 /* The ray */
 typedef struct{

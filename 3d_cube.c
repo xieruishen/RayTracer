@@ -33,6 +33,12 @@ typedef struct{
   float width;
   float height;
   int material;
+  float x1;
+  float x2;
+  float y1;
+  float y2;
+  float z1;
+  float z2;
 }cube;
 
 /* Colour */
@@ -55,7 +61,8 @@ typedef struct{
 }ray;
 
 /* Lightsource definition */
-typedef struct{
+typedef struct{				/* Find closest intersection */
+
 	vector pos;
 	colour intensity;
 }light;
@@ -103,12 +110,12 @@ In the slab method, we flatten out the cube and check if the ray passes through 
 bool intersectRayCube(ray *r, cube *c, float *t)
 {
 
-  float x1 = c->pos.x - 0.5*c->length;
-  float x2 = c->pos.x + 0.5*c->length;
-  float y1 = c->pos.y - 0.5*c->width;
-  float y2 = c->pos.y + 0.5*c->width;
-  float z1 = c->pos.z - 0.5*c->height;
-  float z2 = c->pos.z + 0.5*c->height;
+  c->x1 = c->pos.x - 0.5*c->length;
+  c->x2 = c->pos.x + 0.5*c->length;
+  c->y1 = c->pos.y - 0.5*c->width;
+  c->y2 = c->pos.y + 0.5*c->width;
+  c->z1 = c->pos.z - 0.5*c->height;
+  c->z2 = c->pos.z + 0.5*c->height;
 
   bool retval = false;
 
@@ -122,12 +129,12 @@ bool intersectRayCube(ray *r, cube *c, float *t)
   float zd = r->dir.z;
   float zo = r->start.z;
 
-  float minCubeX = min(x1,x2);
-  float maxCubeX = max(x1,x2);
-  float minCubeY = min(y1,y2);
-  float maxCubeY = max(y1,x2);
-  float minCubeZ = min(z1,z2);
-  float maxCubeZ = max(z1,x2);
+  float minCubeX = min(c->x1,c->x2);
+  float maxCubeX = max(c->x1,c->x2);
+  float minCubeY = min(c->y1,c->y2);
+  float maxCubeY = max(c->y1,c->x2);
+  float minCubeZ = min(c->z1,c->z2);
+  float maxCubeZ = max(c->z1,c->x2);
 
 
 /*if the ray is parallel to the x axis and not inbetween the min and max x bounds of the cube then return false*/
@@ -242,7 +249,7 @@ int main(int argc, char *argv[]){
 	/* Our ray and a sphere */
 	sphere s;
 	ray r;
-  cube c;
+  // cube c;
 
 	/* x, y for screen 'resolution' */
 	int x,y;
@@ -261,7 +268,7 @@ int main(int argc, char *argv[]){
   materials[0].diffuse.red = 1;
   materials[0].diffuse.green = 0;
   materials[0].diffuse.blue = 0;
-  materials[0].reflection = 0.2;
+  materials[0].reflection = 0.9;
 
   materials[1].diffuse.red = 0;
   materials[1].diffuse.green = 1;
@@ -289,28 +296,28 @@ int main(int argc, char *argv[]){
   // cube.height = 100;
   // cube.material = 0;
   //
-  cube[0].pos.x = 450;
-  cube[0].pos.y = 450;
-  cube[0].pos.z = 50;
-  cube[0].length = 300;
-  cube[0].width = 300;
-  cube[0].height = 100;
+  cube[0].pos.x = 500;
+  cube[0].pos.y = 500;
+  cube[0].pos.z = 100;
+  cube[0].length = 200;
+  cube[0].width = 200;
+  cube[0].height = 200;
   cube[0].material = 0;
-
-  cube[1].pos.x = 150;
-  cube[1].pos.y = 150;
-  cube[1].pos.z = 350;
-  cube[1].length = 100;
-  cube[1].width = 100;
-  cube[1].height = 100;
+  //
+  cube[1].pos.x = 0;
+  cube[1].pos.y = 0;
+  cube[1].pos.z = 0;
+  cube[1].length = 200;
+  cube[1].width = 200;
+  cube[1].height = 200;
   cube[1].material = 1;
-
-  cube[2].pos.x = 0;
-  cube[2].pos.y = 0;
-  cube[2].pos.z = 350;
-  cube[2].length = 50;
-  cube[2].width = 50;
-  cube[2].height = 50;
+  //
+  cube[2].pos.x = 700;
+  cube[2].pos.y = 700;
+  cube[2].pos.z = 0;
+  cube[2].length = 200;
+  cube[2].width = 200;
+  cube[2].height = 200;
   cube[2].material = 2;
 
 
@@ -321,16 +328,17 @@ int main(int argc, char *argv[]){
   // c.width = 300;
   // c.height = 100;
   // c.material = 1
+  //
 
   light lights[3];
 
-  lights[0].pos.x = 0;
+  lights[0].pos.x = 100;
   lights[0].pos.y = 240;
   lights[0].pos.z = -100;
   lights[0].intensity.red = 1;
   lights[0].intensity.green = 1;
   lights[0].intensity.blue = 1;
-  //
+
   lights[1].pos.x = 3200;
   lights[1].pos.y = 3000;
   lights[1].pos.z = -1000;
@@ -338,12 +346,23 @@ int main(int argc, char *argv[]){
   lights[1].intensity.green = 0.7;
   lights[1].intensity.blue = 1;
 
-  lights[2].pos.x = 600;
+  lights[2].pos.x = 300;
   lights[2].pos.y = 0;
   lights[2].pos.z = -100;
   lights[2].intensity.red = 0.3;
   lights[2].intensity.green = 0.5;
   lights[2].intensity.blue = 1;
+
+  // light lights;
+  //
+  // lights.pos.x = 0;
+  // lights.pos.y = 240;
+  // lights.pos.z = -100;
+  // lights        // printf("%f\n", newStart.x);
+        // printf("%f\n", spheres[currentSphere].pos.x);.intensity.red = 1;
+  // lights.intensity.green = 1;
+  // lights.intensity.blue = 1;
+
 
 	/* Direction of the ray */
 	r.dir.x = 0;
@@ -389,22 +408,132 @@ int main(int argc, char *argv[]){
 				if(currentCube == -1) {
             // printf("true");
             break;
-        }else{
+        }else{  // lights[1].pos.x = 3200;
+  // lights[1].pos.y = 3000;
+  // lights[1].pos.z = -1000;
+  // lights[1].intensity.red = 0.6;
+  // lights[1].intensity.green = 0.7;
+  // lights[1].intensity.blue = 1;
+
           // printf("%d\n", currentCube);
         }
 
-
+        /*this takes the scalar quantity tnear which is the point of intersection of the the ray and the cube and converts
+        it to a vector quanity by multipling the vector by tnear */
 				vector scaled = vectorScale(t, &r.dir);
-				vector newStart = vectorAdd(&r.start, &scaled);
+				vector incidentRayCamera = vectorAdd(&r.start, &scaled);
 
 				/* Find the normal for this new vector at the point of intersection */
-				vector n = vectorSub(&newStart, &cube[currentCube].pos);
-				float temp = vectorDot(&n, &n);
+        vector n;
+        // printf("%f\n", incidentRayCamera.x);
+        // // printf("Hi\n");
+        // // printf("%d\n", cube[currentCube].x1);
+        if (incidentRayCamera.x == cube[currentCube].x1){
+          if(incidentRayCamera.y == cube[currentCube].y1 || incidentRayCamera.y == cube[currentCube].y2 ||
+            incidentRayCamera.z == cube[currentCube].z1 || incidentRayCamera.z == cube[currentCube].z2){
+            n.x = 0;
+            n.y = 0;
+            n.z = 0;
+            // printf("edge");
+          }
+          else{
+            n.x = -1;
+            n.y = 0;
+            n.z = 0;
+          }
+        }
+        else if (incidentRayCamera.x == cube[currentCube].x2){
+          if(incidentRayCamera.y == cube[currentCube].y1 || incidentRayCamera.y == cube[currentCube].y2 ||
+            incidentRayCamera.z == cube[currentCube].z1 || incidentRayCamera.z == cube[currentCube].z2){
+            n.x = 0;
+            n.y = 0;
+            n.z = 0;
+            // printf("edge");
+          }
+          else{
+             n.x = 1;
+             n.y = 0;
+             n.z = 0;
+          }
+        }
+        else if (incidentRayCamera.y == cube[currentCube].y1){
+          if(incidentRayCamera.x == cube[currentCube].x1 || incidentRayCamera.x == cube[currentCube].x2 ||
+            incidentRayCamera.z == cube[currentCube].z1 || incidentRayCamera.z == cube[currentCube].z2){
+            n.x = 0;
+            n.y = 0;
+            n.z = 0;
+            // printf("edge");
+          }
+          else{
+             n.x = 0;
+             n.y = -1;
+             n.z = 0;
+          }
+        }
+        else if (incidentRayCamera.y == cube[currentCube].y2){
+          if(incidentRayCamera.x == cube[currentCube].x1 || incidentRayCamera.x == cube[currentCube].x2 ||
+            incidentRayCamera.z == cube[currentCube].z1 || incidentRayCamera.z == cube[currentCube].z2){
+            n.x = 0;
+            n.y = 0;
+            n.z = 0;
+            // printf("edge");
+          }
+          else{
+             n.x = 0;
+             n.y = 1;
+             n.z = 0;
+          }
+        }
+        else if (incidentRayCamera.z == cube[currentCube].z1){
+          if(incidentRayCamera.x == cube[currentCube].x1 || incidentRayCamera.x == cube[currentCube].x2 ||
+            incidentRayCamera.y == cube[currentCube].y1 || incidentRayCamera.y == cube[currentCube].y2){
+            n.x = 0;
+            n.y = 0;
+            n.z = 0;
+            // printf("edge");
+          }
+          else{
+             n.x = 0;
+             n.y = 0;
+             n.z = -1;
+          }
+        }
+
+        else if (incidentRayCamera.z == cube[currentCube].z2){
+          if(incidentRayCamera.x == cube[currentCube].x1 || incidentRayCamera.x == cube[currentCube].x2 ||
+            incidentRayCamera.y == cube[currentCube].y1 || incidentRayCamera.y == cube[currentCube].y2){
+            n.x = 0;
+            n.y = 0;
+            n.z = 0;
+            // printf("edge");
+          }
+          else{
+             n.x = 0;
+             n.y = 0;
+             n.z = 1;
+          }
+        }
+
+        // printf("%i\n", cube[currentCube].pos );
+         //n = vectorSub(&incidentRayCamera, &cube[currentCube].pos);
+         // float dx = 0.5 * cube[currentCube].length;
+         // float dy = 0.5 * cube[currentCube].width;
+         // float dz = 0.5 * cube[currentCube].height;
+         //
+         // n.x = n.x/dx;
+         // n.y = n.y/dy;
+         // n.z = n.z/dz;
+
+				float temp = vectorDot(&n, &n) ;
+        // printf("%f\n", incidentRayCamera.x);
+        // printf("%f\n", cube[currentCube].pos.x);
+
+        // printf("%f\n", temp);
+
 				if(temp == 0) break;
 
 				temp = 1.0f / sqrtf(temp);
 				n = vectorScale(temp, &n);
-        // printf("%f\n",n.x);
 
 				/* Find the material to determine the colour */
 				material currentMat = materials[cube[currentCube].material];
@@ -413,7 +542,8 @@ int main(int argc, char *argv[]){
 				unsigned int j;
 				for(j=0; j < 3; j++){
 					light currentLight = lights[j];
-					vector dist = vectorSub(&currentLight.pos, &newStart);
+          // light currentLight = lights;
+					vector dist = vectorSub(&currentLight.pos, &incidentRayCamera);
 					if(vectorDot(&n, &dist) <= 0.0f) continue;
 					float t = sqrtf(vectorDot(&dist,&dist));
           //printf("%lf\n",t );
@@ -423,22 +553,24 @@ int main(int argc, char *argv[]){
           }
 
 					ray lightRay;
-					lightRay.start = newStart;
+					lightRay.start = incidentRayCamera;
 					lightRay.dir = vectorScale((1/t), &dist);
 
 						/* Lambert diffusion */
 						float lambert = vectorDot(&lightRay.dir, &n) * coef;
-						red += lambert * currentLight.intensity.red * currentMat.diffuse.red * 100;
+            // printf("%lf\n",lambert);
+
+						red += lambert * currentLight.intensity.red * currentMat.diffuse.red   ;
             // printf("%lf\n",red);
-						green += lambert * currentLight.intensity.green * currentMat.diffuse.green * 40;
-						blue += lambert * currentLight.intensity.blue * currentMat.diffuse.blue * 40;
+						green += lambert * currentLight.intensity.green * currentMat.diffuse.green  ;
+						blue += lambert * currentLight.intensity.blue * currentMat.diffuse.blue ;
 					}
 
 				/* Iterate over the reflection */
 				coef *= currentMat.reflection;
 
 				/* The reflected ray start and direction */
-				r.start = newStart;
+				r.start = incidentRayCamera;
 				float reflect = 2.0f * vectorDot(&r.dir, &n);
 				vector tmp = vectorScale(reflect, &n);
 				r.dir = vectorSub(&r.dir, &tmp);

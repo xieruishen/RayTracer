@@ -7,8 +7,8 @@
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 
 /* Width and height of out image */
-#define WIDTH  800
-#define HEIGHT 600
+#define WIDTH  1000
+#define HEIGHT 1000
 
 /* The vector structure */
 typedef struct{
@@ -99,7 +99,8 @@ bool intersectRaySphere(ray *r, sphere *s, float *t){
 	float discr = B * B - 4 * A * C;
 
 	/* If the discriminant is negative, there are no real roots.
-	 * Return false in that case as the ray misses the sphere.
+	 * Return false in that case as the
+   ray misses the sphere.
 	 * Return true in all other cases (can be one or two intersections)
 	 * t represents the distance between the start of the ray and
 	 * the point on tnewStarthe sphere where it intersects.
@@ -250,10 +251,17 @@ int main(int argc, char *argv[]){
 				/* Find the normal for this new vector at the point of intersection */
 				vector n = vectorSub(&newStart, &spheres[currentSphere].pos);
 				float temp = vectorDot(&n, &n);
+        // printf("%f\n", newStart.x);
+        // printf("%f\n", spheres[currentSphere].pos.x);
+        // printf("%f\n",n.x);
+
+
 				if(temp == 0) break;
 
 				temp = 1.0f / sqrtf(temp);
 				n = vectorScale(temp, &n);
+        printf("%f ,%f %f\n", n.x, n.y, n.z);
+
 
 				/* Find the material to determine the colour */
 				material currentMat = materials[spheres[currentSphere].material];
@@ -274,6 +282,8 @@ int main(int argc, char *argv[]){
 
 					/* Lambert diffusion */
 					float lambert = vectorDot(&lightRay.dir, &n) * coef;
+          // printf("%lf\n",lambert);
+
 					red += lambert * currentLight.intensity.red * currentMat.diffuse.red;
 					green += lambert * currentLight.intensity.green * currentMat.diffuse.green;
 					blue += lambert * currentLight.intensity.blue * currentMat.diffuse.blue;

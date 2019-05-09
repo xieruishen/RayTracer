@@ -92,4 +92,3 @@ In order to visualize the ray interaction with the object, a for loop is impleme
 
 ### Trello
 https://trello.com/b/mrNEzxu5/thinkraytracer
-

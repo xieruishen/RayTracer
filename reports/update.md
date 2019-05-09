@@ -2,7 +2,7 @@
 #### Hyegi Bang, Sherrie Shen, Athmika Senthikumar
 
 ## Project Vision
-The goal of the project is to implement a ray tracing program. The minimum viable product is a ray tracing program that renders a properly lighted image given a scene with only spheres in 2d and 3d. The stretch goal would be having the ray tracing program to render a properly lighted image given a scene with more diverse objects such as cubes and prisms.
+The goal of the project is to implement a ray tracing program. The minimum viable product is a ray tracing program that renders a properly lighted image given a scene with only objects in 2d and 3d. The stretch goal would be having the ray tracing program to render a properly lighted image given a scene with more diverse objects and shadows.
 
 ### Learning Goal
 Our learning goals for this project is to build up knowledge about graphics programming in C. Another goal is to learn the math behind ray tracing and be able to implement mathematical functions effectively using structs. We also want to improve our skills around writing well planned, well organized C code that is easy to read and modify.
@@ -80,16 +80,15 @@ return tFar >= tNear;
 ```
 
 
+###
+
 #### Pixels
 In order to visualize the ray interaction with the object, a for loop is implemented to iterate over every pixel of the screen so that we project eye array from every single pixel of an image Then, it checks whether the ray intersects with the pixel and if yes, a RGB value is encoded to lighten up the object.
 
 ### Results
 ![results](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/Result.jpg)
 
-### Next Steps
-* ***Implement shapes in 3D with reflections and shadows.*** So far we have only been implementing and studying 2d ray tracing code, our next step is to code spheres and cubes in 3D. This would involve studying reflections and shadows.  
-* ***Add other shapes in 2D and 3D.*** One possibility that we are considering right now is rendering prisms.
+### Reflections
 
 ### Trello
 https://trello.com/b/mrNEzxu5/thinkraytracer
-
