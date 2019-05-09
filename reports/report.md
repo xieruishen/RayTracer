@@ -165,7 +165,7 @@ Five cubes generated with four light source. All spheres are visible, reflecting
 
 ### Reflection
 
-As a team and an individual, we were able to meet all of our learning goals: to gain more confidence coding in C and deeper understanding of graphics. It was interesting to learn about physics in the field of computer graphics and perform implementation. However, we wished to have understood Lambertian Reflection more beforehand as implementing them. Unlike spheres, since cubes do not have gradients on her surface it was harder to calculate the diffuse reflection. We were only able to get general outlook of lights and reflection.
+As a team and an individual, we were able to meet all of our learning goals: to gain more confidence coding in C and deeper understanding of graphics. It was interesting to learn about physics in the field of computer graphics and perform implementation. However, we wished to have understood Lambertian Reflection more beforehand as implementing them. Unlike spheres, since cubes do not have gradients on the surface it was harder to calculate the diffuse reflection. We were only able to get general outlook of lights and reflection.
 
 ![working_cube](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/working_cube.jpg)
 For future, we would like to drive formula that would provide more realistic light reflections on the cube. Overall, the project was good learning experience as it provided reasonable introduction to performing computer graphics in c.
