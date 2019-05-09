@@ -252,8 +252,7 @@ int main(int argc, char *argv[]){
 				for(i = 0; i < 5; i++){
 					if(intersectRaySphere(&r, &spheres[i], &t)){
 						currentSphere = i;
-            // printf("%d\n", currentSphere);
-            // printf("distance: %f\n", t);
+
           }
 				}
 				if(currentSphere == -1) break;
@@ -264,10 +263,6 @@ int main(int argc, char *argv[]){
 				/* Find the normal for this new vector at the point of intersection */
 				vector n = vectorSub(&newStart, &spheres[currentSphere].pos);
 				float temp = vectorDot(&n, &n);
-        // printf("%f\n", newStart.x);
-        // printf("%f\n", spheres[currentSphere].pos.x);
-        // printf("%f\n",n.x);
-
 
 				if(temp == 0) break;
 
@@ -286,7 +281,6 @@ int main(int argc, char *argv[]){
 					vector dist = vectorSub(&currentLight.pos, &newStart);
 					if(vectorDot(&n, &dist) <= 0.0f) continue;
 					float t = sqrtf(vectorDot(&dist,&dist));
-          //printf("%lf\n",t );
 					if(t <= 0.0f) continue;
 
 					ray lightRay;
@@ -295,7 +289,6 @@ int main(int argc, char *argv[]){
 
 					/* Lambert diffusion */
 					float lambert = vectorDot(&lightRay.dir, &n) * coef;
-          // printf("%lf\n",lambert);
 
 					red += lambert * currentLight.intensity.red * currentMat.diffuse.red;
 					green += lambert * currentLight.intensity.green * currentMat.diffuse.green;
@@ -316,8 +309,6 @@ int main(int argc, char *argv[]){
 
 			img[(x + y*WIDTH)*3 + 0] = (unsigned char)min(red*255.0f, 255.0f);
       if(red != 0){
-        // printf("%lf\n", red);
-        // printf("%d\n", img[(x + y*WIDTH)*3 + 0]);
       }
 
 			img[(x + y*WIDTH)*3 + 1] = (unsigned char)min(green*255.0f, 255.0f);

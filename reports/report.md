@@ -26,9 +26,25 @@ Other resources that provides examples for ray tracer program with more complex 
 
 ## Implementation
 
-#### UML Diagram
-Our implementation is a modification of the code available on this website: https://www.purplealienplanet.com/node/20
-![UML](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/UML.jpg)
+#### General System Architecture
+In order to visualize the ray interaction with the object, a for loop is implemented to iterate over every pixel of the screen so that we project eye array from every single pixel of an image. Different intensities of light lit points depending on how much light reaches the point. If light reaches a point, the intersection between the eye-ray, ray shoot through the screen, and the point is also calculated to determine whether the point is in the view. Furthermore, if the light reflects of from the objects we continue the intersect ray calculation until the intensity of the light dims.
+
+```
+for(HEIGHT){
+  for(WIDTH){
+      do for every ray:
+         - Find closest ray/sphere intersection:
+           * Iterate over every sphere
+
+         - Check if we reach a light source from this point
+           * Iterate over every light source
+           * Find right color
+
+         - Either go with reflected ray or go to next pixel. If go with reflected ray, update intensity of light source with reflectivity of object.
+  }
+}
+```
+
 
 #### Sphere
 
@@ -80,47 +96,64 @@ return tFar >= tNear;
 ```
 
 
-#### General System Architecture
-In order to visualize the ray interaction with the object, a for loop is implemented to iterate over every pixel of the screen so that we project eye array from every single pixel of an image. Different intensities of light lit points depending on how much light reaches the point. If light reaches a point, the intersection between the eye-ray, ray shoot through the screen, and the point is also calculated to determine whether the point is in the view. Furthermore, if the light reflects of from the objects we continue the intersect ray calculation until the intensity of the light dims.
+### Lambertian Reflectance
+To make a more realistic scene, we not only need to compute whether the eye ray intersect with any object in scene but also determine how to illuminate the object based on its material. Material consists of color diffusion and reflectivity (0 - 100%) as its attributes. For each object we put in the scene, we assigned it both a position and material. The color diffusion property indicates the color the object will reflect when light shines it. For each RGB value, we scaled the 0-255 range to be between 0-1 since it is much more intuitive to specify a percentage. The reflectivity of an object is used to determine how 'shiny' an object is and acts as a mirror for other objects. The material of the object is defined as follows:
 
 ```
-for(HEIGHT){
-  for(WIDTH){
-      do for every ray:
-         - Find closest ray/sphere intersection:
-           * Iterate over every sphere
+typedef struct{
+    colour diffuse;
+    float reflection;
+}material;
+```
 
-         - Check if we reach a lightsource from this point
-           * Iterate over every lightsource
-           * Find right color
+If the eye ray coming from a specific pixel on the image will hit an object, we need to figure out the intensity of the pixel. We applied Lambertian reflectance to model diffuse reflection. By Lambertian reflectance, the apparent brightness of a Lambertian surface to an observer is the same regardless of the observer's angle of view. This model allows us to compute the color and intensity of each pixel. The model is described as follows:
+![equation](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/ID_equation.gif)
 
-         - Either go with reflected ray or go to next pixel
-  }
+where I<sub>D</sub> represents the intensity of one color for that pixel, N is the unit normal vector of the surface at the point of intersection , L is the unit vector from point of intersection to the light source, C is the diffuse color of the sphere, I<sub>L</sub> is the intensity of the incoming light. The code is outlined below:
+
+```
+for(j=0; j < 3; j++){
+  light currentLight = lights[j];
+  vector dist = vectorSub(&currentLight.pos, &newStart);
+  if(vectorDot(&n, &dist) <= 0.0f) continue;
+  float t = sqrtf(vectorDot(&dist,&dist));
+  if(t <= 0.0f) continue;
+
+  ray lightRay;
+  lightRay.start = newStart;
+  lightRay.dir = vectorScale((1/t), &dist);
+
+  /* Lambert diffusion */
+  float lambert = vectorDot(&lightRay.dir, &n) * coef; /*coef is the scaling factor of the intensity. It equals to 1 if it is not reflected light*/
+
+  red += lambert * currentLight.intensity.red * currentMat.diffuse.red;
+  green += lambert * currentLight.intensity.green * currentMat.diffuse.green;
+  blue += lambert * currentLight.intensity.blue * currentMat.diffuse.blue;
 }
 ```
 
-### Lambertian Reflectance
-To make a more realistic scene, we not only need to compute whether the eye ray intersect with any object in scene but also determine how to illuminate the object based on its material. Material consists of color diffusion and reflectivity (0 - 100%) as its attributes. For each object we put in the scene, we assigned it both a position and material. The color diffusion property indicates the color the object will reflect when light shines it. For each RGB value, we scaled the 0-255 range to be between 0-1 since it is much more intuitive to specify a percentage. The reflectivity of an object is used to determine whether
-Reflectivity is used to determine how 'shiny' an object is and will act as a mirror for other objects.
 
-Once we determined whether a specific pixel should be illuminated or not, we need to figure out the intensity of the pixel
-
-
-```
-- For each lightsource that can be reached:
-     * Calculate Lambert dot product with material reflection
-     * Calculate each colour component, consisting of:
-- Lambert dot product result
-- Per colour intensity of the incoming light
-```
+### Reflection of Ray
+Another key aspect we takes into consider when updating the pixel value of the image is reflection of light of the illuminated object. We use the normal vector of the surface at the point of intersection to compute the reflected ray. We then repeat the same process by treating this reflected ray as the new eye ray. To prevent the algorithm from infinitely being stuck in the loop of reflection rays, we keep track of the number of times this iteration takes place. In our implementation, we set the upper bound to be 14 iterations. We also terminate the iteration if the scaling factor of the light intensity is zero meaning no light is going to be reflected.
 
 ### Results
 ![cube_three](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/cube_three.jpg)
+Three cubes generated with three light source. All cubes are visible.
 ![cube_dimmed](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/cube_dimmed.jpg)
+Three cubes generated with two light source: one shining on right portion of the screen and the other light is located far in z-axis from the screen. All cubes are visible. However, the color of far-left cube is dimmed as the light's intensity when light array intersects the point is low.  
+
 ![sphere_reflection](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/sphere_reflection.jpg)
+Five cubes generated with four light source. All spheres are visible, reflecting on each other.
 
 
 ### Reflection
+
+As a team and an individual, we were able to meet all of our learning goals: to gain more confidence coding in C and deeper understanding of graphics. It was interesting to learn about physics in the field of computer graphics and perform implementation. However, we wished to have understood Lambertian Reflection more beforehand as implementing them. Unlike spheres, since cubes do not have gradients on her surface it was harder to calculate the diffuse reflection. We were only able to get general outlook of lights and reflection.
+
+![cube_three](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/cube_three.jpg)
+For future, we would like to drive formula that would provide more realistic light reflections on the cube. Overall, the project was good learning experience as it provided reasonable introduction to performing computer graphics in c.
+
+
 
 ### Trello
 https://trello.com/b/mrNEzxu5/thinkraytracer

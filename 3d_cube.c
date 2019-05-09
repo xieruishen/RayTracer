@@ -260,10 +260,6 @@ int main(int argc, char *argv[]){
 
   material materials[3];
 
-  // materials.diffuse.red = 1;
-  // materials.diffuse.green = 0;
-  // materials.diffuse.blue = 0;
-  // materials.reflection = 0.2;
 
   materials[0].diffuse.red = 1;
   materials[0].diffuse.green = 0;
@@ -280,22 +276,11 @@ int main(int argc, char *argv[]){
 	materials[2].diffuse.blue = 1;
 	materials[2].reflection = 0.9;
 
-	// s.pos.x = 200;
-	// s.pos.y = 300;
-	// s.pos.z = 0;
-	// s.radius = 100;
-	// s.material = 0;
+
 
   cube cube[3];
 
-  // cube.pos.x = 450;
-  // cube.pos.y = 450;
-  // cube.pos.z = 150;
-  // cube.length = 300;
-  // cube.width = 300;
-  // cube.height = 100;
-  // cube.material = 0;
-  //
+
   cube[0].pos.x = 500;
   cube[0].pos.y = 500;
   cube[0].pos.z = 100;
@@ -303,15 +288,15 @@ int main(int argc, char *argv[]){
   cube[0].width = 200;
   cube[0].height = 200;
   cube[0].material = 0;
-  //
-  cube[1].pos.x = 0;
-  cube[1].pos.y = 0;
+
+  cube[1].pos.x = 00;
+  cube[1].pos.y = 00;
   cube[1].pos.z = 0;
   cube[1].length = 200;
   cube[1].width = 200;
   cube[1].height = 200;
   cube[1].material = 1;
-  //
+
   cube[2].pos.x = 700;
   cube[2].pos.y = 700;
   cube[2].pos.z = 0;
@@ -319,16 +304,6 @@ int main(int argc, char *argv[]){
   cube[2].width = 200;
   cube[2].height = 200;
   cube[2].material = 2;
-
-
-  // c.pos.x = 450;
-  // c.pos.y = 450;
-  // c.pos.z = 150;
-  // c.length = 300;
-  // c.width = 300;
-  // c.height = 100;
-  // c.material = 1
-  //
 
   light lights[3];
 
@@ -352,16 +327,6 @@ int main(int argc, char *argv[]){
   lights[2].intensity.red = 0.3;
   lights[2].intensity.green = 0.5;
   lights[2].intensity.blue = 1;
-
-  // light lights;
-  //
-  // lights.pos.x = 0;
-  // lights.pos.y = 240;
-  // lights.pos.z = -100;
-  // lights        // printf("%f\n", newStart.x);
-        // printf("%f\n", spheres[currentSphere].pos.x);.intensity.red = 1;
-  // lights.intensity.green = 1;
-  // lights.intensity.blue = 1;
 
 
 	/* Direction of the ray */
@@ -398,25 +363,14 @@ int main(int argc, char *argv[]){
 				unsigned int i;
 				for(i = 0; i < 3; i++){
 					if(intersectRayCube(&r, &cube[i], &t)){
-            // printf("%d\n", i);
 						currentCube = i;
-            // printf("%d\n", i);
-            // printf("%d\n", currentCube);
-            // printf("distance: %f\n", t);
+
 				}
       }
 				if(currentCube == -1) {
-            // printf("true");
             break;
-        }else{  // lights[1].pos.x = 3200;
-  // lights[1].pos.y = 3000;
-  // lights[1].pos.z = -1000;
-  // lights[1].intensity.red = 0.6;
-  // lights[1].intensity.green = 0.7;
-  // lights[1].intensity.blue = 1;
-
-          // printf("%d\n", currentCube);
         }
+
 
         /*this takes the scalar quantity tnear which is the point of intersection of the the ray and the cube and converts
         it to a vector quanity by multipling the vector by tnear */
@@ -425,9 +379,7 @@ int main(int argc, char *argv[]){
 
 				/* Find the normal for this new vector at the point of intersection */
         vector n;
-        // printf("%f\n", incidentRayCamera.x);
-        // // printf("Hi\n");
-        // // printf("%d\n", cube[currentCube].x1);
+
         if (incidentRayCamera.x == cube[currentCube].x1){
           if(incidentRayCamera.y == cube[currentCube].y1 || incidentRayCamera.y == cube[currentCube].y2 ||
             incidentRayCamera.z == cube[currentCube].z1 || incidentRayCamera.z == cube[currentCube].z2){
@@ -515,7 +467,7 @@ int main(int argc, char *argv[]){
         }
 
         // printf("%i\n", cube[currentCube].pos );
-         //n = vectorSub(&incidentRayCamera, &cube[currentCube].pos);
+         n = vectorSub(&incidentRayCamera, &cube[currentCube].pos);
          // float dx = 0.5 * cube[currentCube].length;
          // float dy = 0.5 * cube[currentCube].width;
          // float dz = 0.5 * cube[currentCube].height;
@@ -525,10 +477,6 @@ int main(int argc, char *argv[]){
          // n.z = n.z/dz;
 
 				float temp = vectorDot(&n, &n) ;
-        // printf("%f\n", incidentRayCamera.x);
-        // printf("%f\n", cube[currentCube].pos.x);
-
-        // printf("%f\n", temp);
 
 				if(temp == 0) break;
 
@@ -546,7 +494,6 @@ int main(int argc, char *argv[]){
 					vector dist = vectorSub(&currentLight.pos, &incidentRayCamera);
 					if(vectorDot(&n, &dist) <= 0.0f) continue;
 					float t = sqrtf(vectorDot(&dist,&dist));
-          //printf("%lf\n",t );
 
 					if(t <= 0.0f){
             continue;
@@ -580,8 +527,7 @@ int main(int argc, char *argv[]){
 			}while((coef > 0.0f) && (level < 15));
 			img[(x + y*WIDTH)*3 + 0] = (unsigned char)min(red*255.0f, 255.0f);
       if(red != 0){
-        // printf("%lf\n", red);
-        // printf("%d\n", img[(x + y*WIDTH)*3 + 0]);
+
       }
 			img[(x + y*WIDTH)*3 + 1] = (unsigned char)min(green*255.0f, 255.0f);
 			img[(x + y*WIDTH)*3 + 2] = (unsigned char)min(blue*255.0f, 255.0f);
