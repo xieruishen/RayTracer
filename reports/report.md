@@ -80,15 +80,47 @@ return tFar >= tNear;
 ```
 
 
-#### Pixels
-In order to visualize the ray interaction with the object, a for loop is implemented to iterate over every pixel of the screen so that we project eye array from every single pixel of an image Then, it checks whether the ray intersects with the pixel and if yes, a RGB value is encoded to lighten up the object.
+#### General System Architecture
+In order to visualize the ray interaction with the object, a for loop is implemented to iterate over every pixel of the screen so that we project eye array from every single pixel of an image. Different intensities of light lit points depending on how much light reaches the point. If light reaches a point, the intersection between the eye-ray, ray shoot through the screen, and the point is also calculated to determine whether the point is in the view. Furthermore, if the light reflects of from the objects we continue the intersect ray calculation until the intensity of the light dims.
+
+```
+for(HEIGHT){
+  for(WIDTH){
+      do for every ray:
+         - Find closest ray/sphere intersection:
+           * Iterate over every sphere
+
+         - Check if we reach a lightsource from this point
+           * Iterate over every lightsource
+           * Find right color
+
+         - Either go with reflected ray or go to next pixel
+  }
+}
+```
+
+### Lambertian Reflectance
+To make a more realistic scene, we not only need to compute whether the eye ray intersect with any object in scene but also determine how to illuminate the object based on its material. Material consists of color diffusion and reflectivity (0 - 100%) as its attributes. For each object we put in the scene, we assigned it both a position and material. The color diffusion property indicates the color the object will reflect when light shines it. For each RGB value, we scaled the 0-255 range to be between 0-1 since it is much more intuitive to specify a percentage. The reflectivity of an object is used to determine whether
+Reflectivity is used to determine how 'shiny' an object is and will act as a mirror for other objects.
+
+Once we determined whether a specific pixel should be illuminated or not, we need to figure out the intensity of the pixel
+
+
+```
+- For each lightsource that can be reached:
+     * Calculate Lambert dot product with material reflection
+     * Calculate each colour component, consisting of:
+- Lambert dot product result
+- Per colour intensity of the incoming light
+```
 
 ### Results
-![results](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/Result.jpg)
+![cube_three](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/cube_three.jpg)
+![cube_dimmed](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/cube_dimmed.jpg)
+![sphere_reflection](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/sphere_reflection.jpg)
 
-### Next Steps
-* ***Implement shapes in 3D with reflections and shadows.*** So far we have only been implementing and studying 2d ray tracing code, our next step is to code spheres and cubes in 3D. This would involve studying reflections and shadows.  
-* ***Add other shapes in 2D and 3D.*** One possibility that we are considering right now is rendering prisms.
+
+### Reflection
 
 ### Trello
 https://trello.com/b/mrNEzxu5/thinkraytracer
