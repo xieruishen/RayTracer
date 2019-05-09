@@ -29,6 +29,8 @@ Other resources that provides examples for ray tracer program with more complex 
 #### General System Architecture
 In order to visualize the ray interaction with the object, a for loop is implemented to iterate over every pixel of the screen so that we project eye array from every single pixel of an image. Different intensities of light lit points depending on how much light reaches the point. If light reaches a point, the intersection between the eye-ray, ray shoot through the screen, and the point is also calculated to determine whether the point is in the view. Furthermore, if the light reflects of from the objects we continue the intersect ray calculation until the intensity of the light dims.
 
+![diagram](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/diagram.png)
+
 ```
 for(HEIGHT){
   for(WIDTH){
@@ -64,18 +66,34 @@ float C = vectorDot(&dist, &dist) - (s->radius * s->radius);
 float discr = B * B - 4 * A * C;
 
 if(discr < 0)
-  return false;
-else
-  return true;
+  retval = false;
+else{
+  float sqrtdiscr = sqrtf(discr);
+  float t0 = (-B + sqrtdiscr)/(2);
+  float t1 = (-B - sqrtdiscr)/(2);
+
+  if(t0 > t1)
+    t0 = t1;
+
+  if((t0 > 0.001f) && (t0 < *t)){
+    *t = t0;
+    retval = true;
+  }else
+    retval = false;
+}
+
+return retval;
+}
 
 ```
+After calculating the discriminant, if the discriminant is negative, since there are no real roots,return false in that case as the ray misses the sphere. All the other cases, return true as it implies that one or two intersections exists. In the code above, t represents the distance between the start of the ray and the point on the incidentRayCamera   intersects. Putting conditionals allows us to get solution with smaller magnitude, implying that it is the point of intersection.   
 
 #### Rectangle
 We used the slab method to calculate the intersection of a ray with the cube. In the slab method, we flatten out the cube and check if the ray falls within the bounding lines as shown in the diagram below.
 
 ![Rectangle](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/Rectangle.jpg)
 
-To determine if it’s a hit or a miss, first, we calculate t1 and t2 using only the x coordinates. Let the minimum of t1 and t2 be tnear and the maximum be tfar. We can then calculate t1 and t2 using the y coordinates, but tnear is only updated if the minimum of t1 and t2 is greater than the previous tnear and tfar is only updated if the maximum of t1 and t2 is lesser than the previous tfar. After these two rounds of calculations are done if tnear > tfar then we know that the ray does not intersect with the cube.
+To determine if it’s a hit or a miss, first, we calculate t1 and t2 using only the x coordinates. Let the minimum of t1 and t2 be tnear and the maximum be tfar. We can then calculate t1 and t2 using the y coordinates, but tnear is only updated if the minimum of t1 and t2 is greater than the previous tnear and tfar is only updated if the maximum of t1 and t2 is lesser than the previous tfar. After these two rounds of calculations are done if tnear > tfar then we know that the ray does not intersect with the cube. Below is an example dealing with the the slab in x planes.
 
 ```
 if (xd==0 && (xo<minCubeX || xo>maxCubeX))
@@ -90,11 +108,11 @@ else{
   tFar = min(tFar, max(t1, t2));
 }
 
-// Same algorithm applies to y-axis
+// Same algorithm applies to y planes and z planes and we find the maximum tNear minimum tFar across all slabs.
 
 return tFar >= tNear;
 ```
-
+If there is a valid intersection, we store the distance from the eye ray to the point of intersection which is just tNear.
 
 ### Lambertian Reflectance
 To make a more realistic scene, we not only need to compute whether the eye ray intersect with any object in scene but also determine how to illuminate the object based on its material. Material consists of color diffusion and reflectivity (0 - 100%) as its attributes. For each object we put in the scene, we assigned it both a position and material. The color diffusion property indicates the color the object will reflect when light shines it. For each RGB value, we scaled the 0-255 range to be between 0-1 since it is much more intuitive to specify a percentage. The reflectivity of an object is used to determine how 'shiny' an object is and acts as a mirror for other objects. The material of the object is defined as follows:
@@ -132,7 +150,6 @@ for(j=0; j < 3; j++){
 }
 ```
 
-
 ### Reflection of Ray
 Another key aspect we takes into consider when updating the pixel value of the image is reflection of light of the illuminated object. We use the normal vector of the surface at the point of intersection to compute the reflected ray. We then repeat the same process by treating this reflected ray as the new eye ray. To prevent the algorithm from infinitely being stuck in the loop of reflection rays, we keep track of the number of times this iteration takes place. In our implementation, we set the upper bound to be 14 iterations. We also terminate the iteration if the scaling factor of the light intensity is zero meaning no light is going to be reflected.
 
@@ -152,7 +169,6 @@ As a team and an individual, we were able to meet all of our learning goals: to 
 
 ![cube_three](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/cube_three.jpg)
 For future, we would like to drive formula that would provide more realistic light reflections on the cube. Overall, the project was good learning experience as it provided reasonable introduction to performing computer graphics in c.
-
 
 
 ### Trello
