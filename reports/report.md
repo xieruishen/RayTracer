@@ -27,7 +27,7 @@ Other resources that provides examples for ray tracer program with more complex 
 ## Implementation
 
 #### General System Architecture
-In order to visualize the ray interaction with the object, a for loop is implemented to iterate over every pixel of the screen so that we project eye array from every single pixel of an image. Different intensities of light lit points depending on how much light reaches the point. If light reaches a point, the intersection between the eye-ray, ray shoot through the screen, and the point is also calculated to determine whether the point is in the view. Furthermore, if the light reflects of from the objects we continue the intersect ray calculation until the intensity of the light dims.
+In order to visualize the ray interaction with the object, a for loop is implemented to iterate over every pixel of the screen so that we project a eye array from every single pixel perpendicular to the image. We then check if the eye ray hits an object in the scene. If the eye ray intersects with an object, we checks if we can reach a light source from this point of intersection. This is done by computing the dot product of the normal vector at the point of intersection and the vector starting at point of intersection to a light source. If a lightsource can be reached, we use the lambertian reflectance model to compute the intensity of each color for the pixel. The last thing we need to consider is light reflection. We need to check if shooting a ray from this point of intersection to the scene will intersect another object or not. If so, we repeat the same process and save the final pixel information in the image.
 
 ![diagram](https://github.com/xieruishen/ThinkRayTracer/blob/master/reports/image/diagram.png)
 
